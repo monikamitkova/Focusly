@@ -1,4 +1,3 @@
-# Focusly
 # 🚀 Focusly
 
 **Focusly** is a modern, gamified productivity platform designed to help users build focus, eliminate distractions, and develop consistent work habits.
