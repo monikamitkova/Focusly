@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 
-import TimerDisplay from "./compoents/TimeDisplay";
-import TimeInputs from "./compoents/TimeInput";
-import Controls from "./compoents/Controls";
-import Stats from "./compoents/Stats";
-import Notification from "./compoents/Notification";
+import TimerDisplay from "../compoents/TimeDisplay"; 
+import TimeInputs from "../compoents/TimeInput";
+import Controls from "../compoents/Controls";
+import Stats from "../compoents/Stats";
+import Notification from "../compoents/Notification";
 
 export default function FocusPage() {
   const [minutes, setMinutes] = useState(25);
