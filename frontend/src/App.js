@@ -1,4 +1,4 @@
-import FocusPage from './pages/FocusPage';
+import FocusPage from './pages/FocusPage/FocusPage';
 import './App.css';
 
 function App() {
