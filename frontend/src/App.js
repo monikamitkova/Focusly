@@ -3,7 +3,7 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App">
+    <div className="bg-slate-900 text-white min-h-screen">
       <FocusPage />
     </div>
   );
