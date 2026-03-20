@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 
-import TimerDisplay from "../compoents/TimeDisplay";
-import TimeInputs from "../compoents/TimeInput";
-import Controls from "../compoents/Controls";
-import Stats from "../compoents/Stats";
-import Notification from "../compoents/Notification";
+import TimerDisplay from "../components/TimeDisplay";
+import TimeInputs from "../components/TimeInput";
+import Controls from "../components/Controls";
+import Stats from "../components/Stats";
+import Notification from "../components/Notification";
+import RecentSessions from "../components/RecentSessions";
+import ModeSelector from "../components/ModeSelector";
 
 export default function FocusPage() {
   const [minutes, setMinutes] = useState(25);
@@ -50,6 +52,13 @@ export default function FocusPage() {
 
   const [notification, setNotification] = useState("");
 
+
+  const [sessions, setSessions] = useState(() => {
+    const saved = localStorage.getItem("sessions");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+
   const hasCompleted = useRef(false);
 
   const level = Math.floor(xp / 100);
@@ -58,7 +67,8 @@ export default function FocusPage() {
     localStorage.setItem("xp", xp);
     localStorage.setItem("streak", streak);
     localStorage.setItem("totalFocusedTime", totalFocusedTime);
-  }, [xp, streak, totalFocusedTime]);
+    localStorage.setItem("sessions", JSON.stringify(sessions));
+  }, [xp, streak, totalFocusedTime, sessions]);
 
   useEffect(() => {
     if (!isRunning) return;
@@ -105,6 +115,15 @@ export default function FocusPage() {
           } else {
             setNotification("⚠️ Session too short");
           }
+
+          const newSession = {
+            type: mode,
+            duration: minutesSpent,
+            xp: earnedXP,
+            time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          }
+
+          setSessions((prev) => [newSession, ...prev]);
 
           if (mode === "focus" && earnedXP > 0) {
             setXp((prev) => prev + earnedXP);
@@ -166,77 +185,63 @@ export default function FocusPage() {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "80px" }}>
-      <h1>Focusly 🚀</h1>
-      <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginBottom: "20px" }}>
-
-        <button
-          onClick={() => handleModeChange("focus")}
-          style={{
-            padding: "10px 20px",
-            borderRadius: "12px",
-            border: "none",
-            background: mode === "focus" ? "linear-gradient(90deg, #6366f1, #a855f7)" : "#eee",
-            color: mode === "focus" ? "white" : "black",
-            cursor: "pointer"
-          }}
-        >
-          🧠 Focus
-        </button>
-
-        <button
-          onClick={() => handleModeChange("short")}
-          style={{
-            padding: "10px 20px",
-            borderRadius: "12px",
-            border: "none",
-            background: mode === "short" ? "linear-gradient(90deg, #6ae35f, #4bbb41)" : "#eee",
-            color: mode === "short" ? "white" : "black",
-            cursor: "pointer"
-          }}
-        >
-          ☕ Short Break
-        </button>
-
-        <button
-          onClick={() => handleModeChange("long")}
-          style={{
-            padding: "10px 20px",
-            borderRadius: "12px",
-            border: "none",
-            background: mode === "long" ? "linear-gradient(90deg, #6ae35f, #4bbb41)" : "#eee",
-            color: mode === "long" ? "white" : "black",
-            cursor: "pointer"
-          }}
-        >
-          🛌 Long Break
-        </button>
-
-      </div>
+  <div style={{ padding: "40px" }}>
+    
+    <div style={{ marginBottom: "40px" }}>
       <Stats
         xp={xp}
         level={level}
         streak={streak}
         totalFocusedTime={totalFocusedTime}
       />
-
-      <Notification message={notification} />
-
-      <TimeInputs
-        minutes={minutes}
-        seconds={seconds}
-        isRunning={isRunning}
-        onMinutesChange={handleMinutesChange}
-        onSecondsChange={handleSecondsChange}
-      />
-
-      <TimerDisplay time={time} />
-
-      <Controls
-        isRunning={isRunning}
-        onToggle={handleToggle}
-        onReset={handleReset}
-      />
     </div>
-  );
-}
+
+    <div
+      style={{
+        display: "flex",
+        gap: "30px",
+        justifyContent: "center",
+        alignItems: "flex-start",
+      }}
+    >
+
+      <div
+        style={{
+          width: "500px",
+          padding: "30px",
+          borderRadius: "20px",
+          background: "#f5f3fc",
+          boxShadow: "0 10px 30px rgba(101, 78, 122, 0.4)",
+          textAlign: "center",
+        }}
+      >
+        <h1>Focusly 🚀</h1>
+
+        <ModeSelector mode={mode} onChange={handleModeChange} />
+
+        <Notification message={notification} />
+
+        <TimeInputs
+          minutes={minutes}
+          seconds={seconds}
+          isRunning={isRunning}
+          onMinutesChange={handleMinutesChange}
+          onSecondsChange={handleSecondsChange}
+        />
+
+        <TimerDisplay time={time} />
+
+        <Controls
+          isRunning={isRunning}
+          onToggle={handleToggle}
+          onReset={handleReset}
+        />
+      </div>
+
+      <div style={{ width: "320px" }}>
+        <RecentSessions sessions={sessions} />
+      </div>
+    </div>
+  </div>
+);
+} 
