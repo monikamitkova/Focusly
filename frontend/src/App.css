@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+.session-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.session-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}

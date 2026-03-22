@@ -54,6 +54,7 @@ export default function RecentSessions({ sessions }) {
       {sessions.slice(0, 5).map((s, i) => (
         <div
           key={i}
+           className="session-card"
           style={{
             marginTop: "15px",
             padding: "15px",
