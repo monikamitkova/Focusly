@@ -61,7 +61,7 @@ export default function FocusPage() {
 
   const hasCompleted = useRef(false);
 
-  const level = Math.floor(xp / 100);
+  const level = Math.floor(0.1 * Math.sqrt(xp));
 
   useEffect(() => {
     localStorage.setItem("xp", xp);
@@ -85,35 +85,33 @@ export default function FocusPage() {
 
           const minutesSpent = Math.floor(selectedTime / 60);
 
-          setTotalFocusedTime((prev) => prev + minutesSpent);
+          if (mode === "focus") {
+            setTotalFocusedTime((prev) => prev + minutesSpent);
+          }
 
           let earnedXP = 0;
 
-          if (minutesSpent >= 1) {
-            earnedXP = minutesSpent * 2 + 10;
-          }
+          if (mode === "focus") {
+            const minutes = minutesSpent;
 
-          if (minutesSpent === 25) {
-            earnedXP += 20;
-          }
+            let baseXP = Math.pow(minutes, 1.2);
+            let streakBonus = 1 + Math.min(streak * 0.02, 0.5);
+            let focusBonus = minutes >= 20 ? 1.25 : 1;
+            let penalty = minutes < 5 ? 0.5 : 1;
 
-          let multiplier = 1;
+            earnedXP = Math.max(1, Math.floor(baseXP * streakBonus * focusBonus * penalty));
 
-          if (streak >= 100) {
-            multiplier = 1.5;
-          } else if (streak >= 10) {
-            multiplier = 1.2;
-          }
+            if (minutes === selectedTime / 60) {
+              earnedXP += 10;
+            }
 
-          earnedXP = Math.floor(earnedXP * multiplier);
-
-          if (earnedXP > 0) {
-            setXp((prev) => prev + earnedXP);
-            setStreak((prev) => prev + 1);
-
-            setNotification(`🔥 +${earnedXP} XP (x${multiplier})`);
-          } else {
-            setNotification("⚠️ Session too short");
+            if (earnedXP > 0) {
+              setXp((prev) => prev + earnedXP);
+              setStreak((prev) => prev + 1);
+              setNotification(`🔥 +${earnedXP} XP`);
+            } else {
+              setNotification("⚠️ Session too short");
+            }
           }
 
           const newSession = {
@@ -125,17 +123,6 @@ export default function FocusPage() {
 
           setSessions((prev) => [newSession, ...prev]);
 
-          if (mode === "focus" && earnedXP > 0) {
-            setXp((prev) => prev + earnedXP);
-            setStreak((prev) => prev + 1);
-
-            setNotification(`🔥 +${earnedXP} XP (x${multiplier})`);
-          } else if (mode !== "focus") {
-            setNotification("☕ Break complete");
-          } else {
-            setNotification("⚠️ Session too short");
-          }
-
           setTimeout(() => setNotification(""), 2000);
 
           return 0;
@@ -146,7 +133,7 @@ export default function FocusPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isRunning, selectedTime, streak]);
+  }, [isRunning, selectedTime, streak, mode]);
 
   const handleMinutesChange = (e) => {
     if (isRunning) return;
@@ -173,7 +160,6 @@ export default function FocusPage() {
   const handleReset = () => {
     setIsRunning(false);
     setTime(selectedTime);
-    setStreak(0);
     hasCompleted.current = false;
   };
 
@@ -185,63 +171,63 @@ export default function FocusPage() {
   };
 
   return (
-  <div style={{ padding: "40px" }}>
-    
-    <div style={{ marginBottom: "40px" }}>
-      <Stats
-        xp={xp}
-        level={level}
-        streak={streak}
-        totalFocusedTime={totalFocusedTime}
-      />
-    </div>
+    <div style={{ padding: "40px" }}>
 
-    <div
-      style={{
-        display: "flex",
-        gap: "30px",
-        justifyContent: "center",
-        alignItems: "flex-start",
-      }}
-    >
+      <div style={{ marginBottom: "40px" }}>
+        <Stats
+          xp={xp}
+          level={level}
+          streak={streak}
+          totalFocusedTime={totalFocusedTime}
+        />
+      </div>
 
       <div
         style={{
-          width: "500px",
-          padding: "30px",
-          borderRadius: "20px",
-          background: "#f5f3fc",
-          boxShadow: "0 10px 30px rgba(101, 78, 122, 0.4)",
-          textAlign: "center",
+          display: "flex",
+          gap: "30px",
+          justifyContent: "center",
+          alignItems: "flex-start",
         }}
       >
-        <h1>Focusly 🚀</h1>
 
-        <ModeSelector mode={mode} onChange={handleModeChange} />
+        <div
+          style={{
+            width: "500px",
+            padding: "30px",
+            borderRadius: "20px",
+            background: "#f5f3fc",
+            boxShadow: "0 10px 30px rgba(101, 78, 122, 0.4)",
+            textAlign: "center",
+          }}
+        >
+          <h1>Focusly 🚀</h1>
 
-        <Notification message={notification} />
+          <ModeSelector mode={mode} onChange={handleModeChange} />
 
-        <TimeInputs
-          minutes={minutes}
-          seconds={seconds}
-          isRunning={isRunning}
-          onMinutesChange={handleMinutesChange}
-          onSecondsChange={handleSecondsChange}
-        />
+          <Notification message={notification} />
 
-        <TimerDisplay time={time} />
+          <TimeInputs
+            minutes={minutes}
+            seconds={seconds}
+            isRunning={isRunning}
+            onMinutesChange={handleMinutesChange}
+            onSecondsChange={handleSecondsChange}
+          />
 
-        <Controls
-          isRunning={isRunning}
-          onToggle={handleToggle}
-          onReset={handleReset}
-        />
-      </div>
+          <TimerDisplay time={time} />
 
-      <div style={{ width: "320px" }}>
-        <RecentSessions sessions={sessions} />
+          <Controls
+            isRunning={isRunning}
+            onToggle={handleToggle}
+            onReset={handleReset}
+          />
+        </div>
+
+        <div style={{ width: "320px" }}>
+          <RecentSessions sessions={sessions} />
+        </div>
       </div>
     </div>
-  </div>
-);
-} 
+  );
+}
