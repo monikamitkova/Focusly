@@ -16,7 +16,8 @@ export default function Stats({ xp, level, streak, totalFocusedTime, sessionsCou
           gap: "20px",
           padding: "25px",
         borderRadius: "20px",
-        background: "linear-gradient(90deg, #6365f117, #ec489a13)",
+        background:
+          "linear-gradient(135deg, rgba(251,249,255,0.92) 0%, rgba(244,238,255,0.95) 52%, rgba(255,243,246,0.92) 100%)",
         boxShadow: "0 10px 30px rgba(101, 78, 122, 0.25)",
       }}
     >

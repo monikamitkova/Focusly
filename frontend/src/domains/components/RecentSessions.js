@@ -10,9 +10,11 @@ export default function RecentSessions({ sessions }) {
       style={{
         padding: "20px",
         borderRadius: "20px",
-        background: "linear-gradient(90deg, #6365f117, #ec489a13)",
+        background:
+          "linear-gradient(135deg, rgba(251,249,255,0.92) 0%, rgba(244,238,255,0.95) 52%, rgba(255,243,246,0.92) 100%)",
         boxShadow: "0 10px 30px rgba(101, 78, 122, 0.49)",
         maxWidth: "400px",
+        minHeight: "610px" 
       }}
     >
       <div
@@ -52,7 +54,7 @@ export default function RecentSessions({ sessions }) {
 
       {sessions.length === 0 && <p>No sessions yet</p>}
 
-      {sessions.slice(0, 5).map((s, i) => (
+      {sessions.slice(0, 6).map((s, i) => (
         <SessionItem key={i} session={s} />
       ))}
     </div>

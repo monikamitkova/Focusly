@@ -62,6 +62,10 @@ export default function FocusPage() {
   const hasCompleted = useRef(false);
 
   const level = Math.floor(0.1 * Math.sqrt(xp));
+  const focusSessionsToday = Math.min(
+    7,
+    sessions.filter((session) => session.type === "focus").length
+  );
 
   useEffect(() => {
     localStorage.setItem("xp", xp);
@@ -171,7 +175,67 @@ export default function FocusPage() {
   };
 
   return (
-    <div style={{ padding: "40px" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        padding: "40px",
+        background:
+          "radial-gradient(circle at top left, rgba(255,255,255,0.96), rgba(239,231,255,0.95) 48%, rgba(255,239,244,0.92) 100%)",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "760px",
+          margin: "0 auto 30px",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "16px",
+            padding: 0,
+          }}
+        >
+          <img
+            src="/logo.png"
+            alt="Focusly logo"
+            style={{
+              width: "74px",
+              height: "74px",
+              objectFit: "contain",
+              filter: "drop-shadow(0 10px 18px rgba(128, 89, 255, 0.18))",
+            }}
+          />
+          <div style={{ textAlign: "left" }}>
+            <h1
+              style={{
+                margin: 0,
+                fontSize: "3rem",
+                lineHeight: 1.02,
+                letterSpacing: "-0.04em",
+                color: "#7f35e8",
+                fontWeight: 800,
+              }}
+            >
+              Focusly
+            </h1>
+          </div>
+        </div>
+
+        <p
+          style={{
+            margin: "0px auto 0",
+            maxWidth: "760px",
+            fontSize: "0.98rem",
+            lineHeight: 1.55,
+            color: "#7c778b",
+          }}
+        >
+          Transform your productivity into an epic journey. Level up with every focus session.
+        </p>
+      </div>
 
       <div style={{ marginBottom: "40px" }}>
         <Stats
@@ -193,35 +257,106 @@ export default function FocusPage() {
 
         <div
           style={{
-            width: "500px",
-            padding: "30px",
-            borderRadius: "20px",
-            background: "#f5f3fc",
-            boxShadow: "0 10px 30px rgba(101, 78, 122, 0.4)",
+            width: "min(520px, 100%)",
+            padding: "36px 42px 34px",
+            borderRadius: "32px",
+            background:
+              "linear-gradient(135deg, rgba(251,249,255,0.92) 0%, rgba(244,238,255,0.95) 52%, rgba(255,243,246,0.92) 100%)",
+            boxShadow:
+              "0 26px 60px rgba(115, 87, 178, 0.18), inset 0 1px 0 rgba(255,255,255,0.75)",
             textAlign: "center",
+            position: "relative",
+            overflow: "hidden",
           }}
         >
-          <h1>Focusly 🚀</h1>
+          <div
+            style={{
+              position: "absolute",
+              inset: "-120px auto auto -80px",
+              width: "320px",
+              height: "320px",
+              borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(181,160,255,0.25), rgba(181,160,255,0))",
+              pointerEvents: "none",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              inset: "auto -90px -140px auto",
+              width: "300px",
+              height: "300px",
+              borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(255,190,210,0.22), rgba(255,190,210,0))",
+              pointerEvents: "none",
+            }}
+          />
 
           <ModeSelector mode={mode} onChange={handleModeChange} />
 
           <Notification message={notification} />
 
-          <TimeInputs
-            minutes={minutes}
-            seconds={seconds}
-            isRunning={isRunning}
-            onMinutesChange={handleMinutesChange}
-            onSecondsChange={handleSecondsChange}
-          />
-
-          <TimerDisplay time={time} />
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <TimerDisplay time={time} mode={mode} totalTime={selectedTime} />
+          </div>
 
           <Controls
             isRunning={isRunning}
             onToggle={handleToggle}
             onReset={handleReset}
           />
+
+          <div
+            style={{
+              marginTop: "26px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "10px",
+              padding: "10px 14px",
+              borderRadius: "999px",
+              background: "rgba(255,255,255,0.46)",
+              border: "1px solid rgba(120, 94, 177, 0.1)",
+            }}
+          >
+            <TimeInputs
+              minutes={minutes}
+              seconds={seconds}
+              isRunning={isRunning}
+              onMinutesChange={handleMinutesChange}
+              onSecondsChange={handleSecondsChange}
+            />
+          </div>
+
+          <div style={{ marginTop: "28px", color: "#766b8b", fontSize: "0.98rem" }}>
+            Focus Sessions Today
+          </div>
+          <div
+            style={{
+              marginTop: "14px",
+              display: "flex",
+              justifyContent: "center",
+              gap: "8px",
+            }}
+          >
+            {Array.from({ length: 7 }).map((_, index) => (
+              <span
+                key={index}
+                style={{
+                  width: "12px",
+                  height: "36px",
+                  borderRadius: "999px",
+                  background:
+                    index < focusSessionsToday
+                      ? "linear-gradient(180deg, #9679fd 0%, #aa38ff 100%)"
+                      : "rgba(136, 128, 158, 0.16)",
+                  boxShadow:
+                    index < focusSessionsToday
+                      ? "0 10px 18px rgba(123, 85, 255, 0.22)"
+                      : "none",
+                }}
+              />
+            ))}
+          </div>
         </div>
 
         <div style={{ width: "320px" }}>
