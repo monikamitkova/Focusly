@@ -25,6 +25,7 @@ export default function Stats({ xp, level, streak, totalFocusedTime, sessionsCou
         icon={<CiTrophy />}
         color="linear-gradient(135deg, #ecbc41, #e18940)"
         glowColor="rgba(236, 188, 65, 0.8)"
+        valueColor="#f2a62b"
         value={level}
         label="Level"
         sub={`${xp} XP`}
@@ -34,6 +35,7 @@ export default function Stats({ xp, level, streak, totalFocusedTime, sessionsCou
         icon={<FaFireFlameCurved />}
         color="linear-gradient(135deg, #ef4444, #f97316)"
         glowColor="rgba(239, 68, 68, 0.8)"
+        valueColor="#ea5b2c"
         value={streak}
         label="Day Streak"
         sub="Keep going!"
@@ -43,6 +45,7 @@ export default function Stats({ xp, level, streak, totalFocusedTime, sessionsCou
         icon={<FiTarget />}
         color="linear-gradient(135deg, #22c55e, #4ade80)"
         glowColor="rgba(34, 197, 94, 0.8)"
+        valueColor="#3daf62"
         value={0}
         label="Today's Focus"
         sub="Start now"
@@ -52,6 +55,7 @@ export default function Stats({ xp, level, streak, totalFocusedTime, sessionsCou
         icon={<IoMdTime />}
         color="linear-gradient(135deg, #3b82f6, #6366f1)"
         glowColor="rgba(59, 130, 246, 0.8)"
+        valueColor="#4658f0"
         value={`${totalFocusedTime}h`}
         label="Total Hours"
         sub="Sessions tracked"
@@ -60,7 +64,7 @@ export default function Stats({ xp, level, streak, totalFocusedTime, sessionsCou
   );
 }
 
-function StatCard({ icon, color, value, label, sub, glowColor }) {
+function StatCard({ icon, color, value, label, sub, glowColor, valueColor }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -97,7 +101,7 @@ function StatCard({ icon, color, value, label, sub, glowColor }) {
         {icon}
       </div>
 
-      <h2 style={{ margin: 0, fontSize: "1.2rem" }}>{value}</h2>
+      <h2 style={{ margin: 0, fontSize: "1.2rem", color: valueColor }}>{value}</h2>
       <p style={{ margin: "2px 0", color: "#666", fontWeight: "500" }}>{label}</p>
 
       <div
