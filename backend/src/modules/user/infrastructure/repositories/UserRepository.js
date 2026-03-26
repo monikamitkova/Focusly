@@ -1,9 +1,9 @@
 const User = require("../../domain/User");
-const UserModel = require('../models/User');
+const UserModel = require("../models/userModel");
 
 class MongooseUserRepository {
-  constructor(UserModel) {
-    this.UserModel = UserModel;
+  constructor(userModel = UserModel) {
+    this.UserModel = userModel;
   }
 
   _toDomain(doc) {
