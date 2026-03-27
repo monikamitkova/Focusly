@@ -1,4 +1,9 @@
-const { calculateLevelFromXp } = require("./services/levelCalculator");
+const {
+    calculateLevelFromXp,
+    getXpIntoCurrentLevel,
+    getCurrentLevelXpRequired,
+    getLevelProgressPercent,
+} = require("./services/levelCalculator");
 const { isSameDay, getDayDifference } = require("./services/dateUtils");
 const { calculateTodayFocusSessions } = require("./services/todayFocusSession");
 
@@ -118,6 +123,18 @@ class User {
 
     getLastFocusSessionDate() {
         return this.lastFocusSessionDate;
+    }
+
+    getXpIntoCurrentLevel() {
+        return getXpIntoCurrentLevel(this.xp);
+    }
+
+    getCurrentLevelXpRequired() {
+        return getCurrentLevelXpRequired(this.xp);
+    }
+
+    getLevelProgressPercent() {
+        return getLevelProgressPercent(this.xp);
     }
 
 }

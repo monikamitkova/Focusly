@@ -33,6 +33,9 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
   const streak = user?.streak ?? 0;
   const totalFocusedTime = user?.totalMinutes ?? 0;
   const level = user?.level ?? 1;
+  const xpIntoCurrentLevel = user?.xpIntoCurrentLevel ?? 0;
+  const currentLevelXpRequired = user?.currentLevelXpRequired ?? 0;
+  const levelProgressPercent = user?.levelProgressPercent ?? 0;
 
   const focusSessionsToday = Math.min(7, todayFocusSessions);
 
@@ -235,6 +238,9 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
           streak={streak}
           totalFocusedTime={totalFocusedTime}
           sessionsCount={focusSessionsToday}
+          xpIntoCurrentLevel={xpIntoCurrentLevel}
+          currentLevelXpRequired={currentLevelXpRequired}
+          levelProgressPercent={levelProgressPercent}
         />
       </div>
 

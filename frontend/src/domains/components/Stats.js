@@ -4,7 +4,16 @@ import { CiTrophy } from "react-icons/ci";
 import { IoMdTime } from "react-icons/io";
 import { FiTarget } from "react-icons/fi";
 
-export default function Stats({ xp, level, streak, totalFocusedTime, sessionsCount }) {
+export default function Stats({
+  xp,
+  level,
+  streak,
+  totalFocusedTime,
+  sessionsCount,
+  xpIntoCurrentLevel,
+  currentLevelXpRequired,
+  levelProgressPercent
+}) {
   return (
     <div
       style={{
@@ -29,6 +38,8 @@ export default function Stats({ xp, level, streak, totalFocusedTime, sessionsCou
         value={level}
         label="Level"
         sub={`${xp} XP`}
+        progress={levelProgressPercent}
+        progressLabel={`${xpIntoCurrentLevel}/${currentLevelXpRequired} XP`}
       />
 
       <StatCard
@@ -64,7 +75,7 @@ export default function Stats({ xp, level, streak, totalFocusedTime, sessionsCou
   );
 }
 
-function StatCard({ icon, color, value, label, sub, glowColor, valueColor }) {
+function StatCard({ icon, color, value, label, sub, glowColor, valueColor, progress, progressLabel }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -103,6 +114,33 @@ function StatCard({ icon, color, value, label, sub, glowColor, valueColor }) {
 
       <h2 style={{ margin: 0, fontSize: "1.2rem", color: valueColor }}>{value}</h2>
       <p style={{ margin: "2px 0", color: "#666", fontWeight: "500" }}>{label}</p>
+
+      {typeof progress === "number" && (
+        <div style={{ margin: "10px 0 8px" }}>
+          <div
+            style={{
+              width: "100%",
+              height: "8px",
+              borderRadius: "999px",
+              background: "rgba(0, 0, 0, 0.08)",
+              overflow: "hidden"
+            }}
+          >
+            <div
+              style={{
+                width: `${progress}%`,
+                height: "100%",
+                borderRadius: "999px",
+                background: color,
+                transition: "width 0.3s ease"
+              }}
+            />
+          </div>
+          <div style={{ marginTop: "6px", fontSize: "11px", color: "#666" }}>
+            {progressLabel}
+          </div>
+        </div>
+      )}
 
       <div
         style={{

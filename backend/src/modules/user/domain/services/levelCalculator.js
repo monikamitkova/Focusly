@@ -14,7 +14,38 @@ function calculateLevelFromXp(xp) {
     return currentLevel;
 }
 
+function getXpIntoCurrentLevel(xp) {
+    let currentLevel = 1;
+    let remainingXp = xp;
+
+    while (remainingXp >= xpNeeded(currentLevel)) {
+        remainingXp -= xpNeeded(currentLevel);
+        currentLevel++;
+    }
+
+    return remainingXp;
+}
+
+function getCurrentLevelXpRequired(xp) {
+    const level = calculateLevelFromXp(xp);
+    return xpNeeded(level);
+}
+
+function getLevelProgressPercent(xp) {
+    const xpIntoCurrentLevel = getXpIntoCurrentLevel(xp);
+    const currentLevelXpRequired = getCurrentLevelXpRequired(xp);
+
+    if (currentLevelXpRequired === 0) {
+        return 0;
+    }
+
+    return Math.min(100, Math.floor((xpIntoCurrentLevel / currentLevelXpRequired) * 100));
+}
+
 module.exports = {
     xpNeeded,
     calculateLevelFromXp,
+    getXpIntoCurrentLevel,
+    getCurrentLevelXpRequired,
+    getLevelProgressPercent,
 };
