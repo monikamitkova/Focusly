@@ -1,3 +1,6 @@
+const { calculateLevelFromXp } = require("./services/levelCalculator");
+const { isSameDay, getDayDifference } = require("./services/dateUtils");
+
 class User {
     constructor(
         id,
@@ -25,29 +28,40 @@ class User {
         this.totalMinutes = totalMinutes;
     }
 
-    xpNeeded(level) {
-        return 100 + (level - 1) * 50;
+    calculateLevelFromXp() {
+        return calculateLevelFromXp(this.xp);
     }
 
-    calculateLevelFromXp() {
-        let currentLevel = 1;
-        let remainingXp = this.xp;
+    updateStreak(currentDate = new Date()) {
+        const today = new Date(currentDate);
 
-        while (remainingXp >= this.xpNeeded(currentLevel)) {
-            remainingXp -= this.xpNeeded(currentLevel);
-            currentLevel++;
+        if (!this.lastActiveDate) {
+            this.streak = 1;
+            this.lastActiveDate = today;
+            return;
         }
 
-        return currentLevel;
+        const lastDate = new Date(this.lastActiveDate);
+
+        if (isSameDay(lastDate, today)) {
+            this.lastActiveDate = today;
+            return;
+        }
+
+        const dayDifference = getDayDifference(lastDate, today);
+
+        if (dayDifference === 1) {
+            this.streak += 1;
+        } else if (dayDifference > 1) {
+            this.streak = 1;
+        }
+
+        this.lastActiveDate = today;
     }
 
     addXp(amount) {
         this.xp += amount;
         this.level = this.calculateLevelFromXp();
-    }
-
-    incrementStreak() {
-        this.streak += 1;
     }
 
     addTotalMinutes(minutes) {

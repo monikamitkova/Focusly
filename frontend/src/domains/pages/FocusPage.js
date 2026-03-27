@@ -65,13 +65,12 @@ export default function FocusPage({ user: initialUser,  setUser: setAppUser }) {
 
     if (mode === "focus") {
       const baseXP = Math.pow(minutesSpent, 1.2);
-      const streakBonus = 1 + Math.min(streak * 0.02, 0.5);
       const focusBonus = minutesSpent >= 20 ? 1.25 : 1;
       const penalty = minutesSpent < 5 ? 0.5 : 1;
 
       earnedXP = Math.max(
         1,
-        Math.floor(baseXP * streakBonus * focusBonus * penalty)
+        Math.floor(baseXP * focusBonus * penalty)
       );
 
       if (minutesSpent === selectedTime / 60) {
@@ -82,6 +81,7 @@ export default function FocusPage({ user: initialUser,  setUser: setAppUser }) {
         const updatedUser = await updateProgress(earnedXP, minutesSpent);
 
         if (updatedUser) {
+          setAppUser(updatedUser);
           setNotification(`🔥 +${earnedXP} XP`);
         } else {
           setNotification("⚠️ Progress update failed");

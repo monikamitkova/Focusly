@@ -95,7 +95,7 @@ exports.updateProgress = async (req, res) => {
 
         if (earnedXp > 0) {
             user.addXp(earnedXp);
-            user.incrementStreak();
+            user.updateStreak(new Date());
         }
 
         if (minutes > 0) {
