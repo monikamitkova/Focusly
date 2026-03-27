@@ -12,7 +12,7 @@ app.use(express.json());
 
 const userRoutes = require("./src/modules/user/interfaces/routes/userRoutes");
 
-app.use("/api/register", userRoutes);
+app.use("/api/auth", userRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {

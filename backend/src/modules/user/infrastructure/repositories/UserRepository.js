@@ -31,7 +31,7 @@ class MongooseUserRepository {
     };
   }
 
-  async save(userEntity) {
+  async create(userEntity) {
     const data = this._toMongooseObject(userEntity);
 
     const created = await this.UserModel.create(data);
@@ -43,7 +43,6 @@ class MongooseUserRepository {
     const doc = await this.UserModel.findOne({ name });
     return this._toDomain(doc);
   }
-
 }
 
 module.exports = MongooseUserRepository;
