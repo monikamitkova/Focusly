@@ -46,7 +46,7 @@ export default function Stats({ xp, level, streak, totalFocusedTime, sessionsCou
         color="linear-gradient(135deg, #22c55e, #4ade80)"
         glowColor="rgba(34, 197, 94, 0.8)"
         valueColor="#3daf62"
-        value={0}
+        value={sessionsCount}
         label="Today's Focus"
         sub="Start now"
       />

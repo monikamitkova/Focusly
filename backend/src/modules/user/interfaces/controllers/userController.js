@@ -11,7 +11,8 @@ const formatUser = (user) => ({
     xp: user.getXp(),
     level: user.getLevel(),
     streak: user.getStreak(),
-    totalMinutes: user.getTotalMinutes()
+    totalMinutes: user.getTotalMinutes(),
+    todayFocusSessions: user.getTodayFocusSessions()
 });
 
 exports.signup = async (req, res) => {
@@ -94,9 +95,13 @@ exports.updateProgress = async (req, res) => {
         }
 
         if (earnedXp > 0) {
+            const currentDate = new Date();
+
             user.addXp(earnedXp);
-            user.updateStreak(new Date());
+            user.updateStreak(currentDate);
+            user.updateTodayFocusSessions(currentDate);
         }
+
 
         if (minutes > 0) {
             user.addTotalMinutes(minutes);

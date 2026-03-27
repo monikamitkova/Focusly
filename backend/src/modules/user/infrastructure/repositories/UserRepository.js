@@ -16,7 +16,9 @@ class MongooseUserRepository {
       doc.level,
       doc.streak,
       doc.lastActiveDate,
-      doc.totalMinutes
+      doc.totalMinutes,
+      doc.todayFocusSessions,
+      doc.lastFocusSessionDate
     );
   }
 
@@ -28,6 +30,8 @@ class MongooseUserRepository {
       streak: user.getStreak(),
       lastActiveDate: user.getLastActiveDate(),
       totalMinutes: user.getTotalMinutes(),
+      todayFocusSessions: user.getTodayFocusSessions(),
+      lastFocusSessionDate: user.getLastFocusSessionDate(),
     };
   }
 

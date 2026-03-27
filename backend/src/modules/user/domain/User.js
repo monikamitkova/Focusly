@@ -1,5 +1,6 @@
 const { calculateLevelFromXp } = require("./services/levelCalculator");
 const { isSameDay, getDayDifference } = require("./services/dateUtils");
+const { calculateTodayFocusSessions } = require("./services/todayFocusSession");
 
 class User {
     constructor(
@@ -10,6 +11,8 @@ class User {
         streak = 0,
         lastActiveDate,
         totalMinutes = 0,
+        todayFocusSessions = 0,
+        lastFocusSessionDate = null,
     ) {
         if (!name) {
             console.error("Missing name");
@@ -26,6 +29,8 @@ class User {
         this.streak = streak;
         this.lastActiveDate = lastActiveDate;
         this.totalMinutes = totalMinutes;
+        this.todayFocusSessions = todayFocusSessions;
+        this.lastFocusSessionDate = lastFocusSessionDate;
     }
 
     calculateLevelFromXp() {
@@ -57,6 +62,17 @@ class User {
         }
 
         this.lastActiveDate = today;
+    }
+
+    updateTodayFocusSessions(currentDate = new Date()) {
+        const result = calculateTodayFocusSessions(
+            this.lastFocusSessionDate,
+            this.todayFocusSessions,
+            currentDate
+        );
+
+        this.todayFocusSessions = result.todayFocusSessions;
+        this.lastFocusSessionDate = result.lastFocusSessionDate;
     }
 
     addXp(amount) {
@@ -94,6 +110,14 @@ class User {
 
     getTotalMinutes() {
         return this.totalMinutes;
+    }
+
+    getTodayFocusSessions() {
+        return this.todayFocusSessions;
+    }
+
+    getLastFocusSessionDate() {
+        return this.lastFocusSessionDate;
     }
 
 }

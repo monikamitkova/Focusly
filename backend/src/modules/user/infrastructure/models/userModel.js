@@ -28,6 +28,16 @@ const userSchema = new mongoose.Schema(
       default: null
     },
 
+    todayFocusSessions: {
+      type: Number,
+      default: 0
+    },
+
+    lastFocusSessionDate: {
+      type: Date,
+      default: null
+    },
+
     totalMinutes: {
       type: Number,
       default: 0

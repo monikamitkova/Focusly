@@ -9,7 +9,7 @@ import Notification from "../components/Notification";
 import RecentSessions from "../components/RecentSessions";
 import ModeSelector from "../components/ModeSelector";
 
-export default function FocusPage({ user: initialUser,  setUser: setAppUser }) {
+export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
   const { user, updateProgress } = useUserProgress(initialUser);
 
   const [minutes, setMinutes] = useState(25);
@@ -19,6 +19,8 @@ export default function FocusPage({ user: initialUser,  setUser: setAppUser }) {
   const [selectedTime, setSelectedTime] = useState(1500);
   const [isRunning, setIsRunning] = useState(false);
   const [notification, setNotification] = useState("");
+  const todayFocusSessions = user?.todayFocusSessions ?? 0;
+
 
   const [sessions, setSessions] = useState(() => {
     const saved = localStorage.getItem("sessions");
@@ -32,10 +34,8 @@ export default function FocusPage({ user: initialUser,  setUser: setAppUser }) {
   const totalFocusedTime = user?.totalMinutes ?? 0;
   const level = user?.level ?? 1;
 
-  const focusSessionsToday = Math.min(
-    7,
-    sessions.filter((session) => session.type === "focus").length
-  );
+  const focusSessionsToday = Math.min(7, todayFocusSessions);
+
 
   useEffect(() => {
     localStorage.setItem("sessions", JSON.stringify(sessions));
@@ -234,6 +234,7 @@ export default function FocusPage({ user: initialUser,  setUser: setAppUser }) {
           level={level}
           streak={streak}
           totalFocusedTime={totalFocusedTime}
+          sessionsCount={focusSessionsToday}
         />
       </div>
 
