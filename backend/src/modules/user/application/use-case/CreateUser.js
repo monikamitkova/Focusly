@@ -18,7 +18,7 @@ class CreateUser {
       null,
       name,
       0,
-      1,
+      undefined,
       0,
       null,
       0

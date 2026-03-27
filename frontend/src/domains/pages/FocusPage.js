@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useUserProgress } from "../../hooks/useUserProgress";
 
 import TimerDisplay from "../components/TimeDisplay";
 import TimeInputs from "../components/TimeInput";
@@ -8,14 +9,37 @@ import Notification from "../components/Notification";
 import RecentSessions from "../components/RecentSessions";
 import ModeSelector from "../components/ModeSelector";
 
-export default function FocusPage() {
+export default function FocusPage({ user: initialUser,  setUser: setAppUser }) {
+  const { user, updateProgress } = useUserProgress(initialUser);
+
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
   const [time, setTime] = useState(1500);
   const [mode, setMode] = useState("focus");
   const [selectedTime, setSelectedTime] = useState(1500);
   const [isRunning, setIsRunning] = useState(false);
+  const [notification, setNotification] = useState("");
 
+  const [sessions, setSessions] = useState(() => {
+    const saved = localStorage.getItem("sessions");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const hasCompleted = useRef(false);
+
+  const xp = user?.xp ?? 0;
+  const streak = user?.streak ?? 0;
+  const totalFocusedTime = user?.totalMinutes ?? 0;
+  const level = user?.level ?? 1;
+
+  const focusSessionsToday = Math.min(
+    7,
+    sessions.filter((session) => session.type === "focus").length
+  );
+
+  useEffect(() => {
+    localStorage.setItem("sessions", JSON.stringify(sessions));
+  }, [sessions]);
 
   const handleModeChange = (newMode) => {
     if (isRunning) return;
@@ -35,44 +59,51 @@ export default function FocusPage() {
     hasCompleted.current = false;
   };
 
-  const [totalFocusedTime, setTotalFocusedTime] = useState(() => {
-    const saved = localStorage.getItem("totalFocusedTime");
-    return saved !== null ? Number(saved) : 0;
-  });
+  const handleSessionComplete = async () => {
+    const minutesSpent = Math.floor(selectedTime / 60);
+    let earnedXP = 0;
 
-  const [xp, setXp] = useState(() => {
-    const saved = localStorage.getItem("xp");
-    return saved !== null ? Number(saved) : 0;
-  });
+    if (mode === "focus") {
+      const baseXP = Math.pow(minutesSpent, 1.2);
+      const streakBonus = 1 + Math.min(streak * 0.02, 0.5);
+      const focusBonus = minutesSpent >= 20 ? 1.25 : 1;
+      const penalty = minutesSpent < 5 ? 0.5 : 1;
 
-  const [streak, setStreak] = useState(() => {
-    const saved = localStorage.getItem("streak");
-    return saved !== null ? Number(saved) : 0;
-  });
+      earnedXP = Math.max(
+        1,
+        Math.floor(baseXP * streakBonus * focusBonus * penalty)
+      );
 
-  const [notification, setNotification] = useState("");
+      if (minutesSpent === selectedTime / 60) {
+        earnedXP += 10;
+      }
 
+      if (earnedXP > 0) {
+        const updatedUser = await updateProgress(earnedXP, minutesSpent);
 
-  const [sessions, setSessions] = useState(() => {
-    const saved = localStorage.getItem("sessions");
-    return saved ? JSON.parse(saved) : [];
-  });
+        if (updatedUser) {
+          setNotification(`🔥 +${earnedXP} XP`);
+        } else {
+          setNotification("⚠️ Progress update failed");
+        }
+      } else {
+        setNotification("⚠️ Session too short");
+      }
+    }
 
+    const newSession = {
+      type: mode,
+      duration: minutesSpent,
+      xp: earnedXP,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    };
 
-  const hasCompleted = useRef(false);
-
-  const level = Math.floor(0.1 * Math.sqrt(xp));
-  const focusSessionsToday = Math.min(
-    7,
-    sessions.filter((session) => session.type === "focus").length
-  );
-
-  useEffect(() => {
-    localStorage.setItem("xp", xp);
-    localStorage.setItem("streak", streak);
-    localStorage.setItem("totalFocusedTime", totalFocusedTime);
-    localStorage.setItem("sessions", JSON.stringify(sessions));
-  }, [xp, streak, totalFocusedTime, sessions]);
+    setSessions((prev) => [newSession, ...prev]);
+    setTimeout(() => setNotification(""), 2000);
+  };
 
   useEffect(() => {
     if (!isRunning) return;
@@ -87,47 +118,7 @@ export default function FocusPage() {
           clearInterval(interval);
           setIsRunning(false);
 
-          const minutesSpent = Math.floor(selectedTime / 60);
-
-          if (mode === "focus") {
-            setTotalFocusedTime((prev) => prev + minutesSpent);
-          }
-
-          let earnedXP = 0;
-
-          if (mode === "focus") {
-            const minutes = minutesSpent;
-
-            let baseXP = Math.pow(minutes, 1.2);
-            let streakBonus = 1 + Math.min(streak * 0.02, 0.5);
-            let focusBonus = minutes >= 20 ? 1.25 : 1;
-            let penalty = minutes < 5 ? 0.5 : 1;
-
-            earnedXP = Math.max(1, Math.floor(baseXP * streakBonus * focusBonus * penalty));
-
-            if (minutes === selectedTime / 60) {
-              earnedXP += 10;
-            }
-
-            if (earnedXP > 0) {
-              setXp((prev) => prev + earnedXP);
-              setStreak((prev) => prev + 1);
-              setNotification(`🔥 +${earnedXP} XP`);
-            } else {
-              setNotification("⚠️ Session too short");
-            }
-          }
-
-          const newSession = {
-            type: mode,
-            duration: minutesSpent,
-            xp: earnedXP,
-            time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          }
-
-          setSessions((prev) => [newSession, ...prev]);
-
-          setTimeout(() => setNotification(""), 2000);
+          void handleSessionComplete();
 
           return 0;
         }
@@ -142,7 +133,7 @@ export default function FocusPage() {
   const handleMinutesChange = (e) => {
     if (isRunning) return;
 
-    const value = Math.min(59, Math.max(0, parseInt(e.target.value) || 0));
+    const value = Math.min(59, Math.max(0, parseInt(e.target.value, 10) || 0));
     setMinutes(value);
 
     const total = value * 60 + seconds;
@@ -153,7 +144,7 @@ export default function FocusPage() {
   const handleSecondsChange = (e) => {
     if (isRunning) return;
 
-    const value = Math.min(59, Math.max(0, parseInt(e.target.value) || 0));
+    const value = Math.min(59, Math.max(0, parseInt(e.target.value, 10) || 0));
     setSeconds(value);
 
     const total = minutes * 60 + value;

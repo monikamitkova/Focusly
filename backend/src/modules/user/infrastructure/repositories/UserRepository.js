@@ -43,6 +43,21 @@ class MongooseUserRepository {
     const doc = await this.UserModel.findOne({ name });
     return this._toDomain(doc);
   }
+
+  async findById(id) {
+    const doc = await this.UserModel.findById(id);
+    return this._toDomain(doc);
+  }
+
+
+  async save(user) {
+    const updatedDoc = await this.UserModel.findByIdAndUpdate(
+      user.getId(),
+      this._toMongooseObject(user),
+      { new: true }
+    );
+    return this._toDomain(updatedDoc);
+  }
 }
 
 module.exports = MongooseUserRepository;

@@ -5,7 +5,6 @@ const MongooseUserRepository = require("../../infrastructure/repositories/UserRe
 const userRepository = new MongooseUserRepository();
 const createUserUseCase = new CreateUser(userRepository);
 
-// ✅ helper to format user (clean API response)
 const formatUser = (user) => ({
     id: user.getId ? user.getId() : user.id,
     name: user.getName(),
@@ -15,12 +14,10 @@ const formatUser = (user) => ({
     totalMinutes: user.getTotalMinutes()
 });
 
-// ✅ SIGNUP
 exports.signup = async (req, res) => {
     try {
         const { name } = req.body;
 
-        // basic validation
         if (!name) {
             return res.status(400).json({
                 message: "Name is required"
@@ -37,10 +34,8 @@ exports.signup = async (req, res) => {
         });
 
     } catch (error) {
-        // 🔥 IMPORTANT DEBUG LOG
         console.error("🔥 SIGNUP ERROR:", error);
 
-        // handle duplicate user
         if (error.code === 11000) {
             return res.status(400).json({
                 message: "User already exists"
@@ -53,7 +48,6 @@ exports.signup = async (req, res) => {
     }
 };
 
-// ✅ LOGIN
 exports.login = async (req, res) => {
     try {
         const { name } = req.body;
@@ -78,8 +72,44 @@ exports.login = async (req, res) => {
         });
 
     } catch (error) {
-        // 🔥 IMPORTANT DEBUG LOG
         console.error("🔥 LOGIN ERROR:", error);
+
+        return res.status(500).json({
+            message: error.message || "Internal server error"
+        });
+    }
+};
+
+exports.updateProgress = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { earnedXp, minutes } = req.body;
+
+        const user = await userRepository.findById(id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        if (earnedXp > 0) {
+            user.addXp(earnedXp);
+            user.incrementStreak();
+        }
+
+        if (minutes > 0) {
+            user.addTotalMinutes(minutes);
+        }
+
+        const updatedUser = await userRepository.save(user);
+
+        return res.status(200).json({
+            message: "Progress updated successfully",
+            user: formatUser(updatedUser)
+        });
+    } catch (error) {
+        console.error("UPDATE PROGRESS ERROR:", error);
 
         return res.status(500).json({
             message: error.message || "Internal server error"

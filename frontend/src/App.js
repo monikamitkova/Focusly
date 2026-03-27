@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="min-h-screen">
       {user ? (
-        <FocusPage user={user} />
+        <FocusPage user={user} setUser={setUser} />
       ) : (
         <AuthPage onLogin={setUser} />
       )}
