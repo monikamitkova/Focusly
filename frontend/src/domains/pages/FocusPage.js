@@ -10,6 +10,8 @@ import RecentSessions from "../components/RecentSessions";
 import ModeSelector from "../components/ModeSelector";
 import UserMenu from "../components/UserMenu";
 
+
+
 export default function FocusPage({ user: initialUser, setUser: setAppUser, onLogout }) {
   const { user, updateProgress } = useUserProgress(initialUser);
 
@@ -34,6 +36,12 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser, onLo
   const sessions = user?.recentSessions ?? [];
 
   const focusSessionsToday = Math.min(7, todayFocusSessions);
+  const alarmRef = useRef(null);
+
+  useEffect(() => {
+    alarmRef.current = new Audio("/timer-end.mp3");
+  }, []);
+
 
   const handleModeChange = (newMode) => {
     if (isRunning) return;
@@ -55,6 +63,16 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser, onLo
   const handleSessionComplete = async () => {
     const minutesSpent = Math.floor(selectedTime / 60);
     let earnedXP = 0;
+
+    try {
+      if (alarmRef.current) {
+        alarmRef.current.currentTime = 0;
+        await alarmRef.current.play();
+      }
+    } catch (error) {
+      console.error("Failed to play timer sound:", error);
+    }
+
 
     const newSession = {
       type: mode,
