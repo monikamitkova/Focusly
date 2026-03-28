@@ -19,10 +19,15 @@ function App() {
     localStorage.removeItem("user");
   }, [user]);
 
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+  };
+
   return (
     <div className="min-h-screen">
       {user ? (
-        <FocusPage user={user} setUser={setUser} />
+        <FocusPage user={user} setUser={setUser} onLogout={handleLogout} />
       ) : (
         <AuthPage onLogin={setUser} />
       )}

@@ -8,8 +8,9 @@ import Stats from "../components/Stats";
 import Notification from "../components/Notification";
 import RecentSessions from "../components/RecentSessions";
 import ModeSelector from "../components/ModeSelector";
+import UserMenu from "../components/UserMenu";
 
-export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
+export default function FocusPage({ user: initialUser, setUser: setAppUser, onLogout }) {
   const { user, updateProgress } = useUserProgress(initialUser);
 
   const [minutes, setMinutes] = useState(25);
@@ -170,9 +171,20 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
         style={{
           maxWidth: "760px",
           margin: "0 auto 30px",
-          textAlign: "center"
+          textAlign: "center",
+          position: "relative"
         }}
       >
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0
+          }}
+        >
+          <UserMenu name={user?.name} onLogout={onLogout} />
+        </div>
+
         <div
           style={{
             display: "inline-flex",
