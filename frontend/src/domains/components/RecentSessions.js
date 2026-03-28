@@ -69,16 +69,19 @@ function SessionItem({ session: s }) {
       bg: "linear-gradient(135deg, rgba(168,85,247,0.2), rgba(99,102,241,0.2))",
       glow: "rgba(168,85,247,0.4)",
       iconBg: "linear-gradient(135deg, #a855f7, #6366f1)",
+      text: "#7e22ce",
     },
     long: {
       bg: "linear-gradient(135deg, rgba(59,130,246,0.2), rgba(37,99,235,0.2))",
       glow: "rgba(59,130,246,0.4)",
       iconBg: "linear-gradient(135deg, #60a5fa, #2563eb)",
+      text: "#1d4ed8",
     },
     short: {
       bg: "linear-gradient(135deg, rgba(34,197,94,0.2), rgba(74,222,128,0.2))",
       glow: "rgba(34,197,94,0.4)",
       iconBg: "linear-gradient(135deg, #4ade80, #24af57)",
+      text: "#15803d",
     }
   };
 
@@ -113,6 +116,7 @@ function SessionItem({ session: s }) {
             alignItems: "center",
             gap: "8px",
             fontWeight: "bold",
+            color: currentColors.text,
           }}
         >
           <div
