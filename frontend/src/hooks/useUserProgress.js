@@ -5,7 +5,7 @@ export const useUserProgress = (initialUser) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState("");
 
-  const updateProgress = async (earnedXp, minutes) => {
+  const updateProgress = async (earnedXp, minutes, session) => {
     if (!user?.id) return null;
 
     setIsUpdating(true);
@@ -17,7 +17,7 @@ export const useUserProgress = (initialUser) => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ earnedXp, minutes })
+        body: JSON.stringify({ earnedXp, minutes, session })
       });
 
       const data = await res.json();

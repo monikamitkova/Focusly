@@ -41,6 +41,30 @@ const userSchema = new mongoose.Schema(
     totalMinutes: {
       type: Number,
       default: 0
+    },
+
+    recentSessions: {
+      type: [
+        {
+          type: {
+            type: String,
+            required: true
+          },
+          duration: {
+            type: Number,
+            required: true
+          },
+          xp: {
+            type: Number,
+            default: 0
+          },
+          time: {
+            type: String,
+            required: true
+          }
+        }
+      ],
+      default: []
     }
   },
   { timestamps: true }

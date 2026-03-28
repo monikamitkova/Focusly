@@ -18,7 +18,8 @@ class MongooseUserRepository {
       doc.lastActiveDate,
       doc.totalMinutes,
       doc.todayFocusSessions,
-      doc.lastFocusSessionDate
+      doc.lastFocusSessionDate,
+      doc.recentSessions
     );
   }
 
@@ -32,6 +33,7 @@ class MongooseUserRepository {
       totalMinutes: user.getTotalMinutes(),
       todayFocusSessions: user.getTodayFocusSessions(),
       lastFocusSessionDate: user.getLastFocusSessionDate(),
+      recentSessions: user.getRecentSessions(),
     };
   }
 

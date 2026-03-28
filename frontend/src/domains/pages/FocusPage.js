@@ -21,12 +21,6 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
   const [notification, setNotification] = useState("");
   const todayFocusSessions = user?.todayFocusSessions ?? 0;
 
-
-  const [sessions, setSessions] = useState(() => {
-    const saved = localStorage.getItem("sessions");
-    return saved ? JSON.parse(saved) : [];
-  });
-
   const hasCompleted = useRef(false);
 
   const xp = user?.xp ?? 0;
@@ -36,13 +30,9 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
   const currentLevelXpRequired = user?.currentLevelXpRequired ?? 0;
   const levelProgressPercent = user?.levelProgressPercent ?? 0;
   const totalMinutes = user?.totalMinutes ?? 0;
+  const sessions = user?.recentSessions ?? [];
 
   const focusSessionsToday = Math.min(7, todayFocusSessions);
-
-
-  useEffect(() => {
-    localStorage.setItem("sessions", JSON.stringify(sessions));
-  }, [sessions]);
 
   const handleModeChange = (newMode) => {
     if (isRunning) return;
@@ -58,13 +48,22 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
     setSelectedTime(newTime);
     setMinutes(Math.floor(newTime / 60));
     setSeconds(newTime % 60);
-
     hasCompleted.current = false;
   };
 
   const handleSessionComplete = async () => {
     const minutesSpent = Math.floor(selectedTime / 60);
     let earnedXP = 0;
+
+    const newSession = {
+      type: mode,
+      duration: minutesSpent,
+      xp: 0,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    };
 
     if (mode === "focus") {
       const baseXP = Math.pow(minutesSpent, 1.2);
@@ -81,30 +80,21 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
       }
 
       if (earnedXP > 0) {
-        const updatedUser = await updateProgress(earnedXP, minutesSpent);
-
-        if (updatedUser) {
-          setAppUser(updatedUser);
-          setNotification(`🔥 +${earnedXP} XP`);
-        } else {
-          setNotification("⚠️ Progress update failed");
-        }
+        newSession.xp = earnedXP;
+        setNotification(`🔥 +${earnedXP} XP`);
       } else {
         setNotification("⚠️ Session too short");
       }
     }
 
-    const newSession = {
-      type: mode,
-      duration: minutesSpent,
-      xp: earnedXP,
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit"
-      })
-    };
+    const updatedUser = await updateProgress(earnedXP, minutesSpent, newSession);
 
-    setSessions((prev) => [newSession, ...prev]);
+    if (updatedUser) {
+      setAppUser(updatedUser);
+    } else {
+      setNotification("⚠️ Progress update failed");
+    }
+
     setTimeout(() => setNotification(""), 2000);
   };
 
@@ -117,7 +107,6 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
           if (hasCompleted.current) return 0;
 
           hasCompleted.current = true;
-
           clearInterval(interval);
           setIsRunning(false);
 
@@ -174,14 +163,14 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
         minHeight: "100vh",
         padding: "40px",
         background:
-          "radial-gradient(circle at top left, rgba(255,255,255,0.96), rgba(239,231,255,0.95) 48%, rgba(255,239,244,0.92) 100%)",
+          "radial-gradient(circle at top left, rgba(255,255,255,0.96), rgba(239,231,255,0.95) 48%, rgba(255,239,244,0.92) 100%)"
       }}
     >
       <div
         style={{
           maxWidth: "760px",
           margin: "0 auto 30px",
-          textAlign: "center",
+          textAlign: "center"
         }}
       >
         <div
@@ -189,7 +178,7 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
             display: "inline-flex",
             alignItems: "center",
             gap: "16px",
-            padding: 0,
+            padding: 0
           }}
         >
           <img
@@ -199,7 +188,7 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
               width: "74px",
               height: "74px",
               objectFit: "contain",
-              filter: "drop-shadow(0 10px 18px rgba(128, 89, 255, 0.18))",
+              filter: "drop-shadow(0 10px 18px rgba(128, 89, 255, 0.18))"
             }}
           />
           <div style={{ textAlign: "left" }}>
@@ -210,7 +199,7 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
                 lineHeight: 1.02,
                 letterSpacing: "-0.04em",
                 color: "#7f35e8",
-                fontWeight: 800,
+                fontWeight: 800
               }}
             >
               Focusly
@@ -224,7 +213,7 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
             maxWidth: "760px",
             fontSize: "0.98rem",
             lineHeight: 1.55,
-            color: "#7c778b",
+            color: "#7c778b"
           }}
         >
           Transform your productivity into an epic journey. Level up with every focus session.
@@ -249,10 +238,9 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
           display: "flex",
           gap: "30px",
           justifyContent: "center",
-          alignItems: "flex-start",
+          alignItems: "flex-start"
         }}
       >
-
         <div
           style={{
             width: "min(520px, 100%)",
@@ -264,7 +252,7 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
               "0 26px 60px rgba(115, 87, 178, 0.18), inset 0 1px 0 rgba(255,255,255,0.75)",
             textAlign: "center",
             position: "relative",
-            overflow: "hidden",
+            overflow: "hidden"
           }}
         >
           <div
@@ -275,7 +263,7 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
               height: "320px",
               borderRadius: "50%",
               background: "radial-gradient(circle, rgba(181,160,255,0.25), rgba(181,160,255,0))",
-              pointerEvents: "none",
+              pointerEvents: "none"
             }}
           />
           <div
@@ -286,7 +274,7 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
               height: "300px",
               borderRadius: "50%",
               background: "radial-gradient(circle, rgba(255,190,210,0.22), rgba(255,190,210,0))",
-              pointerEvents: "none",
+              pointerEvents: "none"
             }}
           />
 
@@ -313,7 +301,7 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
               padding: "10px 14px",
               borderRadius: "999px",
               background: "rgba(255,255,255,0.46)",
-              border: "1px solid rgba(120, 94, 177, 0.1)",
+              border: "1px solid rgba(120, 94, 177, 0.1)"
             }}
           >
             <TimeInputs
@@ -333,7 +321,7 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
               marginTop: "14px",
               display: "flex",
               justifyContent: "center",
-              gap: "8px",
+              gap: "8px"
             }}
           >
             {Array.from({ length: 7 }).map((_, index) => (
@@ -350,7 +338,7 @@ export default function FocusPage({ user: initialUser, setUser: setAppUser }) {
                   boxShadow:
                     index < focusSessionsToday
                       ? "0 10px 18px rgba(123, 85, 255, 0.22)"
-                      : "none",
+                      : "none"
                 }}
               />
             ))}

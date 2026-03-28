@@ -19,6 +19,7 @@ class User {
         totalMinutes = 0,
         todayFocusSessions = 0,
         lastFocusSessionDate = null,
+        recentSessions = [],
     ) {
         if (!name) {
             console.error("Missing name");
@@ -37,6 +38,7 @@ class User {
         this.totalMinutes = totalMinutes;
         this.todayFocusSessions = todayFocusSessions;
         this.lastFocusSessionDate = lastFocusSessionDate;
+        this.recentSessions = recentSessions;
     }
 
     calculateLevelFromXp() {
@@ -90,6 +92,10 @@ class User {
         this.totalMinutes += minutes;
     }
 
+    addRecentSession(session) {
+        this.recentSessions = [session, ...this.recentSessions].slice(0, 10);
+    }
+
     getId() {
         return this.id;
     }
@@ -124,6 +130,10 @@ class User {
 
     getLastFocusSessionDate() {
         return this.lastFocusSessionDate;
+    }
+
+    getRecentSessions() {
+        return this.recentSessions;
     }
 
     getXpIntoCurrentLevel() {

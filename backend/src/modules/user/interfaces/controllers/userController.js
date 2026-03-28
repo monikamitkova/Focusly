@@ -16,7 +16,8 @@ const formatUser = (user) => ({
     todayFocusSessions: user.getTodayFocusSessions(),
     xpIntoCurrentLevel: user.getXpIntoCurrentLevel(),
     currentLevelXpRequired: user.getCurrentLevelXpRequired(),
-    levelProgressPercent: user.getLevelProgressPercent()
+    levelProgressPercent: user.getLevelProgressPercent(),
+    recentSessions: user.getRecentSessions()
 });
 
 exports.signup = async (req, res) => {
@@ -88,7 +89,7 @@ exports.login = async (req, res) => {
 exports.updateProgress = async (req, res) => {
     try {
         const { id } = req.params;
-        const { earnedXp, minutes } = req.body;
+        const { earnedXp, minutes, session } = req.body;
 
         const user = await userRepository.findById(id);
 
@@ -107,8 +108,12 @@ exports.updateProgress = async (req, res) => {
         }
 
 
-        if (minutes > 0) {
+        if (minutes > 0 && session?.type === "focus") {
             user.addTotalMinutes(minutes);
+        }
+
+        if (session) {
+            user.addRecentSession(session);
         }
 
         const updatedUser = await userRepository.save(user);
