@@ -36,8 +36,8 @@ export default function Stats({
         glowColor="rgba(236, 188, 65, 0.8)"
         valueColor="#f2a62b"
         value={level}
-        label="Level"
-        sub={`${xp} XP`}
+        label="Level"   
+
         progress={levelProgressPercent}
         progressLabel={`${xpIntoCurrentLevel}/${currentLevelXpRequired} XP`}
       />
