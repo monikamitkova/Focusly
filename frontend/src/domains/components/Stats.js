@@ -4,11 +4,26 @@ import { CiTrophy } from "react-icons/ci";
 import { IoMdTime } from "react-icons/io";
 import { FiTarget } from "react-icons/fi";
 
+function formatTotalTime(totalMinutes) {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours === 0) {
+    return `${minutes}m`;
+  }
+
+  if (minutes === 0) {
+    return `${hours}h`;
+  }
+
+  return `${hours}h ${minutes}m`;
+}
+
 export default function Stats({
   xp,
   level,
   streak,
-  totalFocusedTime,
+  totalMinutes, 
   sessionsCount,
   xpIntoCurrentLevel,
   currentLevelXpRequired,
@@ -22,8 +37,8 @@ export default function Stats({
         maxWidth: "900px",
         margin: "0 auto",
         justifyContent: "space-between",
-          gap: "20px",
-          padding: "25px",
+        gap: "20px",
+        padding: "25px",
         borderRadius: "20px",
         background:
           "linear-gradient(135deg, rgba(251,249,255,0.92) 0%, rgba(244,238,255,0.95) 52%, rgba(255,243,246,0.92) 100%)",
@@ -36,8 +51,7 @@ export default function Stats({
         glowColor="rgba(236, 188, 65, 0.8)"
         valueColor="#f2a62b"
         value={level}
-        label="Level"   
-
+        label="Level"
         progress={levelProgressPercent}
         progressLabel={`${xpIntoCurrentLevel}/${currentLevelXpRequired} XP`}
       />
@@ -67,8 +81,8 @@ export default function Stats({
         color="linear-gradient(135deg, #3b82f6, #6366f1)"
         glowColor="rgba(59, 130, 246, 0.8)"
         valueColor="#4658f0"
-        value={`${totalFocusedTime}h`}
-        label="Total Hours"
+        value={formatTotalTime(totalMinutes)}
+        label="Total Focus Time"
         sub="Sessions tracked"
       />
     </div>
@@ -93,8 +107,8 @@ function StatCard({ icon, color, value, label, sub, glowColor, valueColor, progr
     >
       <div
         style={{
-            width: "60px",
-            height: "60px",
+          width: "60px",
+          height: "60px",
           margin: "0 auto 10px",
           borderRadius: "16px",
           background: color,

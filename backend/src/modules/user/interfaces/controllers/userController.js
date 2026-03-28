@@ -12,6 +12,7 @@ const formatUser = (user) => ({
     level: user.getLevel(),
     streak: user.getStreak(),
     totalMinutes: user.getTotalMinutes(),
+    totalHours: user.getTotalHours(),
     todayFocusSessions: user.getTodayFocusSessions(),
     xpIntoCurrentLevel: user.getXpIntoCurrentLevel(),
     currentLevelXpRequired: user.getCurrentLevelXpRequired(),

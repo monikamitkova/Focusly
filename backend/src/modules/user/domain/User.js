@@ -6,6 +6,7 @@ const {
 } = require("./services/levelCalculator");
 const { isSameDay, getDayDifference } = require("./services/dateUtils");
 const { calculateTodayFocusSessions } = require("./services/todayFocusSession");
+const { formatTotalTime } = require("./services/totalMinutes");
 
 class User {
     constructor(
@@ -135,6 +136,10 @@ class User {
 
     getLevelProgressPercent() {
         return getLevelProgressPercent(this.xp);
+    }
+
+    getTotalHours() {
+        return formatTotalTime(this.totalMinutes);
     }
 
 }
