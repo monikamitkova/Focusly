@@ -23,10 +23,13 @@ Focusly is a gamified focus timer built with React, Node js, Express, and MongoD
 ## Project Structure
 
 ```text
-focusly/
+Focusly/
 ├── backend/
+│   ├── .env
 │   ├── index.js
 │   ├── package.json
+│   ├── package-lock.json
+│   ├── node_modules/
 │   └── src/
 │       └── modules/
 │           └── user/
@@ -42,31 +45,37 @@ focusly/
 │               └── interfaces/
 │                   ├── controllers/
 │                   └── routes/
-├── frontend/
-│   ├── package.json
-│   ├── public/
-│   └── src/
-│       ├── App.js
-│       ├── hooks/
-│       │   ├── useAuth.js
-│       │   └── useUserProgress.js
-│       └── domains/
-│           ├── components/
-│           │   ├── UserMenu.js
-│           │   ├── Stats.js
-│           │   ├── RecentSessions.js
-│           │   ├── Notification.js
-│           │   ├── Controls.js
-│           │   ├── ModeSelector.js
-│           │   ├── TimeDisplay.js
-│           │   ├── TimeInput.js
-│           │   └── auth/
-│           └── pages/
-│               ├── AuthPage.js
-│               └── FocusPage.js
-├── package.json
-├── package-lock.json
-└── README.md
+└── frontend/
+    ├── package.json
+    ├── package-lock.json
+    ├── node_modules/
+    ├── public/
+    │   ├── index.html
+    │   ├── logo.png
+    │   └── timer-end.mp3
+    └── src/
+        ├── App.js
+        ├── App.css
+        ├── hooks/
+        │   ├── useAuth.js
+        │   └── useUserProgress.js
+        └── domains/
+            ├── components/
+            │   ├── Controls.js
+            │   ├── ModeSelector.js
+            │   ├── Notification.js
+            │   ├── RecentSessions.js
+            │   ├── Stats.js
+            │   ├── TimeDisplay.js
+            │   ├── TimeInput.js
+            │   ├── UserMenu.js
+            │   └── auth/
+            └── pages/
+                ├── AuthPage.js
+                └── FocusPage.js
+├── .gitignore
+├── README.md
+
 
 ```
 
