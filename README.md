@@ -1,181 +1,167 @@
-# 🚀 Focusly
+# Focusly
 
-**Focusly** is a modern, gamified productivity platform designed to help users build focus, eliminate distractions, and develop consistent work habits.
+Focusly is a gamified focus timer built with React, Node js, Express, and MongoDB. It combines Pomodoro-style sessions with progression features like XP, levels, daily streaks, today focus count, recent sessions, and persistent user progress.
 
-By combining time-based focus sessions with game mechanics such as XP, streaks, and progression systems, Focusly transforms discipline into an engaging and rewarding experience.
+## Features
 
----
+- Focus, short break, and long break timers
+- Per-user login/signup by name
+- XP and level progression
+- Daily streak tracking
+- Today focus sessions tracking
+- Recent sessions stored per profile
+- Level progress bar
+- Persistent login across refresh
+- Logout flow
 
-## 🧩 Overview
+## Tech Stack
 
-Focusly addresses one of the most common problems in today’s digital world — lack of focus.
+- Frontend: React, react-scripts, react-icons
+- Backend: Node.js, Express
+- Database: MongoDB with Mongoose
 
-Instead of relying on traditional productivity tools, Focusly introduces a **behavior-driven system** where users are rewarded for staying focused and penalized for distractions.
+## Project Structure
 
----
+```text
+## Project Structure
 
-## ⚙️ Tech Stack
-
-* **Frontend:** React, React Router
-* **Backend:** Node.js, Express.js
-* **Database:** MongoDB
-* **State Management:** React Context API
-* **Storage (initial fallback):** LocalStorage
-
----
-
-## 🏗️ Architecture
-
-The project follows a **full-stack architecture** with clear separation of concerns:
-
-```id="8w4y1b"
-Focusly/
+```text
+focusly/
 ├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   └── server.js
+│   ├── index.js
+│   ├── package.json
+│   └── src/
+│       └── modules/
+│           └── user/
+│               ├── application/
+│               │   ├── dtos/
+│               │   └── use-case/
+│               ├── domain/
+│               │   ├── services/
+│               │   └── User.js
+│               ├── infrastructure/
+│               │   ├── models/
+│               │   └── repositories/
+│               └── interfaces/
+│                   ├── controllers/
+│                   └── routes/
 ├── frontend/
-│   ├── api/
-│   ├── components/
-│   ├── contexts/
-│   ├── hooks/
-│   ├── pages/
-│   ├── routes/
-│   ├── styles/
-│   ├── utils/
-│   ├── App.js
-│   └── index.js
-├── public/
+│   ├── package.json
+│   ├── public/
+│   └── src/
+│       ├── App.js
+│       ├── hooks/
+│       │   ├── useAuth.js
+│       │   └── useUserProgress.js
+│       └── domains/
+│           ├── components/
+│           │   ├── UserMenu.js
+│           │   ├── Stats.js
+│           │   ├── RecentSessions.js
+│           │   ├── Notification.js
+│           │   ├── Controls.js
+│           │   ├── ModeSelector.js
+│           │   ├── TimeDisplay.js
+│           │   ├── TimeInput.js
+│           │   └── auth/
+│           └── pages/
+│               ├── AuthPage.js
+│               └── FocusPage.js
 ├── package.json
+├── package-lock.json
 └── README.md
+
 ```
 
----
+## Backend Overview
 
-## 🚀 Features
+The backend exposes user-related routes under `/api/auth`:
 
-* ⏱️ **Focus Sessions**
-  Pomodoro-style timer to structure deep work intervals
+- `POST /api/auth/signup`
+- `POST /api/auth/login`
+- `PATCH /api/auth/:id/progress`
 
-* 🎮 **Gamification System**
-  Earn XP and level up by completing focus sessions
+User progress is persisted in MongoDB and includes:
 
-* 🔥 **Streak Tracking**
-  Build consistency through daily streaks
+- `xp`
+- `level`
+- `streak`
+- `lastActiveDate`
+- `todayFocusSessions`
+- `lastFocusSessionDate`
+- `totalMinutes`
+- `recentSessions`
 
-* 📊 **Progress Tracking**
-  Monitor productivity and improvement over time
+## Frontend Overview
 
-* ❌ **Distraction Penalty System** *(planned)*
-  Track and discourage time-wasting behavior
+The frontend renders either:
 
----
+- `AuthPage` when no user is logged in
+- `FocusPage` when a user is available
 
-## 🧠 Core Concept
+The logged-in user is stored in `localStorage` so refresh does not log the user out unintentionally.
 
-Focusly is built around a simple idea:
-
-> **What gets rewarded gets repeated.**
-
-By rewarding focus and visualizing progress, the application helps users:
-
-* build discipline
-* reduce procrastination
-* create sustainable habits
-
----
-
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
-* Node.js (v16 or higher)
-* npm or yarn
+- Node.js
+- npm
+- MongoDB connection string
 
----
+### 1. Install dependencies
 
-### Installation
+Root:
 
-```bash id="l7p7pg"
-git clone https://github.com/your-username/focusly.git
-cd focusly
+```bash
+npm install
 ```
 
-#### Install dependencies
+Frontend:
 
-```bash id="o5kh3q"
+```bash
 cd frontend
 npm install
-
-cd ../backend
-npm install
 ```
 
----
+Backend:
 
-### Running the Application
-
-#### Start backend server
-
-```bash id="9x9k8y"
+```bash
 cd backend
+npm install
+```
+
+### 2. Configure environment variables
+
+Create a `.env` file inside `backend/`:
+
+```env
+MONGO_URI=your_mongodb_connection_string
+PORT=5000
+```
+
+### 3. Run the backend
+
+From `backend/`:
+
+```bash
+node index.js
+```
+
+The backend runs on `http://localhost:5000`.
+
+### 4. Run the frontend
+
+From `frontend/`:
+
+```bash
 npm start
 ```
 
-#### Start frontend
+The frontend runs on `http://localhost:3000`.
 
-```bash id="5u4h1n"
-cd frontend
-npm start
-```
+## Current Behavior
 
----
-
-## 🔮 Roadmap
-
-Planned improvements and upcoming features:
-
-* 🔐 Authentication system (JWT-based)
-* 📱 Fully responsive mobile design
-* 🌙 Dark / Light mode toggle
-* 📊 Advanced analytics dashboard
-* 🔔 Notifications and reminders
-* ☁️ Cloud deployment
-
----
-
-## 📚 Learning Objectives
-
-This project demonstrates:
-
-* Full-stack application development
-* State and data flow management
-* Time-based logic (timers, intervals)
-* Scalable project architecture
-* UI/UX design principles
-
----
-
-## 🎯 Project Vision
-
-Focusly aims to become more than just a timer —
-it is designed as a **personal focus system** that helps users take control of their time and attention.
-
----
-
-## 📸 Screenshots
-
-*(To be added after UI implementation)*
-
----
-
-## 🤝 Contributing
-
-Contributions, ideas, and feedback are welcome.
-
----
-
-## 📬 Contact
-
-For questions or collaboration opportunities, feel free to reach out.
+- Completing a focus session updates XP, level, streak, today focus sessions, total focus time, and recent sessions
+- Recent sessions are tied to the logged-in user, not shared across accounts
+- Focus progress is loaded again after refresh because the active user is persisted locally
