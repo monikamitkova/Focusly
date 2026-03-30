@@ -23,9 +23,6 @@ Focusly is a gamified focus timer built with React, Node js, Express, and MongoD
 ## Project Structure
 
 ```text
-## Project Structure
-
-```text
 focusly/
 ├── backend/
 │   ├── index.js
